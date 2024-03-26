@@ -67,10 +67,14 @@ const [formEnabled , setFormEnabled] = useState(false)
 useEffect(() => {
 userSchema.isValid(values).then(setFormEnabled)
 }, [values])
+
   const onChange = evt => {
     let {type, name, value, checked} = evt.target 
     value = type == 'checkbox' ? checked:value
     setValues({...values,[name]: value})
+    yup.reach(userSchema, name).validate(value)
+      .then(() => setErrors({...errors,[name]: '' }))
+      .catch((err) => setErrors({...errors, [name]: err.errors[0] }))
     // ✨ TASK: IMPLEMENT YOUR INPUT CHANGE HANDLER
     // The logic is a bit different for the checkbox, but you can check
     // whether the type of event target is "checkbox" and act accordingly.
